@@ -1,3 +1,5 @@
+NODE_GITHUB_TOKEN=<token> node index.js 
+
 - Get all forks from:
     https://github.com/mozillascience/studyGroup
 - From each fork, list all files inside:
