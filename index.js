@@ -2,9 +2,15 @@
 var GitHubApi = require('node-github');
 var Octokat = require('octokat');
 var matter = require('gray-matter');
+var mkdirp = require('mkdirp');
+var Bluebird = require('bluebird');
 
 //We should authenticate to prevent API rate limits
-var octo = new Octokat();
+var octo = new Octokat({
+    token: process.env.NODE_GITHUB_TOKEN
+});
+
+
 
 var github = new GitHubApi({
     version: '3.0.0',
@@ -18,7 +24,10 @@ var github = new GitHubApi({
     }
 });
 
-github.repos.getContent = github.repos.getForks;
+github.authenticate({
+    type: 'oauth',
+    token: process.env.NODE_GITHUB_TOKEN
+});
 
 //First we need to know how many forks we have,
 //since we will have to paginage.
@@ -26,7 +35,7 @@ github.repos.getForks({
     user: 'mozillascience',
     repo: 'studyGroup',
     page: 0,
-    per_page: 2
+    per_page: 50
     // per_page: 100
 }, function(err, res) {
     if(err) return console.error('Error', err);
@@ -42,14 +51,24 @@ github.repos.getForks({
         });
     });
 
+
     forks.map(function(fork){
         var repo = octo.repos(fork.user, fork.repo);
+        var filepath = require('path').resolve('./data/'+ fork.user);
+        mkdirp.sync(filepath);
         repo.contents('_posts').fetch().then(function(contents) {        // `.fetch` is used for getting JSON
 
+            var promises = [];
             contents.map(function(file){
                 console.log(file.path);
-                repo.contents(file.path).read().then(function(contents){
-                    console.log(matter(contents).data);
+                //use bluebird spread
+                promises.push(repo.contents(file.path).read());
+            });
+
+            var file = [];
+            Bluebird.all(promises).then(function(files){
+                files.map(function(contents){
+                    file.push(matter(contents).data);
                     // { title: 'Data Carpentry Genomics Workshop',
                      // text: 'The focus of this workshop will be on working with genomics data and data management and analysis for genomics research.',
                      // location: 'B18 Staff Conference Room',
@@ -58,6 +77,7 @@ github.repos.getForks({
                      // startTime: '09:00',
                      // endTime: '17:00' }
                 });
+                require('fs').writeFileSync(filepath + '/data.json', JSON.stringify(file, null, 4), 'utf-8');
             });
         });
     });
