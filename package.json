@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "gray-matter": "^2.0.2",
     "node-github": "0.0.3",
     "octokat": "^0.4.17"
   }
