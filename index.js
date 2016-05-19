@@ -1,8 +1,9 @@
 'use strict';
 var GitHubApi = require('node-github');
 var Octokat = require('octokat');
+var matter = require('gray-matter');
 
-
+//We should authenticate to prevent API rate limits
 var octo = new Octokat();
 
 var github = new GitHubApi({
@@ -48,14 +49,18 @@ github.repos.getForks({
             contents.map(function(file){
                 console.log(file.path);
                 repo.contents(file.path).read().then(function(contents){
-                    console.log(contents)
+                    console.log(matter(contents).data);
+                    // { title: 'Data Carpentry Genomics Workshop',
+                     // text: 'The focus of this workshop will be on working with genomics data and data management and analysis for genomics research.',
+                     // location: 'B18 Staff Conference Room',
+                     // link: 'https://github.com/smcclatchy/studyGroup/issues/6',
+                     // date: 2016-04-14T00:00:00.000Z,
+                     // startTime: '09:00',
+                     // endTime: '17:00' }
                 });
             });
         });
     });
 
-    // console.log(JSON.stringify(res, null, 4));
-    console.log(JSON.stringify(forks, null, 4));
-}, function(){
-    console.log('HERE')
+    // console.log(JSON.stringify(forks, null, 4));
 });
