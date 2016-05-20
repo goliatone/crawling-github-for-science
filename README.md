@@ -1,17 +1,45 @@
-NODE_GITHUB_TOKEN=<token> node index.js 
+### Crawler
+
+You need a github token, which you can generate [here][token]
+
+To run the program:
+
+```
+$ NODE_GITHUB_TOKEN=<token> node index.js
+```
+
+#### Flow and Requirements
+
+Flow:
 
 - Get all forks from:
-    https://github.com/mozillascience/studyGroup
+    `https://github.com/mozillascience/studyGroup`
 - From each fork, list all files inside:
-    https://github.com/mozillascience/studyGroup/tree/gh-pages/_posts from github-pages
+    `https://github.com/mozillascience/studyGroup/tree/gh-pages/_posts` from github-pages branch
 - Download/request each file and parse to create json object (graymatter)
+
+Requirements:
+
 - It should recover from crashes
 - It should run x times a month
 
 
+#### Data
+Entry parsed:
+
+```js
+{ title: 'Data Carpentry Genomics Workshop',
+ text: 'The focus of this workshop will be on working with genomics data and data management and analysis for genomics research.',
+ location: 'B18 Staff Conference Room',
+ link: 'https://github.com/smcclatchy/studyGroup/issues/6',
+ date: 2016-04-14T00:00:00.000Z,
+ startTime: '09:00',
+ endTime: '17:00' }
+```
+
 Fork payload:
 
-```json 
+```json
    {
         "id": 47545411,
         "name": "studyGroup",
@@ -101,3 +129,6 @@ Fork payload:
         "default_branch": "gh-pages"
     }
 ```
+
+
+[token]:https://github.com/settings/tokens
