@@ -1,4 +1,4 @@
-NODE_GITHUB_TOKEN=<token> node index.js 
+NODE_GITHUB_TOKEN=<token> node index.js
 
 - Get all forks from:
     https://github.com/mozillascience/studyGroup
@@ -9,9 +9,21 @@ NODE_GITHUB_TOKEN=<token> node index.js
 - It should run x times a month
 
 
+Entry parsed:
+
+```json
+{ title: 'Data Carpentry Genomics Workshop',
+ text: 'The focus of this workshop will be on working with genomics data and data management and analysis for genomics research.',
+ location: 'B18 Staff Conference Room',
+ link: 'https://github.com/smcclatchy/studyGroup/issues/6',
+ date: 2016-04-14T00:00:00.000Z,
+ startTime: '09:00',
+ endTime: '17:00' }
+```
+
 Fork payload:
 
-```json 
+```json
    {
         "id": 47545411,
         "name": "studyGroup",
