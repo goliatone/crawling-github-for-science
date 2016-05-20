@@ -23,6 +23,10 @@ Requirements:
 - It should recover from crashes
 - It should run x times a month
 
+TODO:
+
+- Handle errors
+- Ignore forks that did not create new events
 
 #### Data
 Entry parsed:
