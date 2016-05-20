@@ -42,7 +42,18 @@ var offset = 0;
 var pageSize = 33;
 
 getForkCount(username, repository).then(function(total){
-    processForkBatch(username, repository, offset, pageSize)
+
+    var promise, promises = [];
+    for(offset=0; offset < Math.ceil(total/pageSize); offset++){
+        promise = processForkBatch(username, repository, offset, pageSize);
+        promises.push(promise);
+    }
+
+    Bluebird.all(promises).then(function(batches){
+        batches.map(function(batch){
+            processContent(batch);
+        });
+    });
 });
 
 function getForkCount(user, repo){
@@ -72,7 +83,7 @@ function processForkBatch(user, repo, offset, size){
         }, function(err, res) {
             if(err) return reject(err);
 
-            console.log('Total forks', res.length);
+            console.log('Batch size', res.length);
             var forks = [];
             res.map(function(fork){
                 forks.push({
@@ -89,6 +100,8 @@ function processForkBatch(user, repo, offset, size){
 }
 
 function processContent(forks){
+
+    console.log("FORTS", JSON.stringify(forks, null, 4));
     forks.map(function(fork){
         var repo = octo.repos(fork.user, fork.repo);
         var filepath = require('path').resolve('./data/'+ fork.user);
